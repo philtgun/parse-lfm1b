@@ -24,7 +24,7 @@ def parse(input_file, output_dir, cutoff=None):
                 data[user_id][track_id] = {'playcount': 0, 'artist_id': artist_id}
             data[user_id][track_id]['playcount'] += 1
 
-            if count >= cutoff:
+            if cutoff is not None and count >= cutoff:
                 break
 
     print('Saving...')
