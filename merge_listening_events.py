@@ -17,6 +17,7 @@ def parse(input_dirs, output_dir):
             data[user_id].append(input_dir)
 
     Path(output_dir).mkdir(exist_ok=True)
+    merged_users = []
     for user_id, input_dirs in tqdm(data.items()):
         if len(input_dirs) == 1:
             shutil.copy(str(Path(input_dirs[0]) / f'{user_id}.csv'), output_dir)
@@ -25,6 +26,9 @@ def parse(input_dirs, output_dir):
             df = pd.concat(dfs).groupby(by=['track_id', 'artist_id']).sum().sort_values(by='playcount', ascending=False)
             df.reset_index(level=['artist_id'], inplace=True)
             df[['playcount', 'artist_id']].to_csv(Path(output_dir) / f'{user_id}.csv')
+            merged_users.append(user_id)
+    print(f'Merged users: {len(merged_users)}')
+    print(merged_users)
 
 
 if __name__ == '__main__':
