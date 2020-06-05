@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 
 
-def parse(input_dirs, output_dir):
+def merge_users_tracks(input_dirs, output_dir):
     # build dictionary of directories where user appears for each user
     data = {}
     for input_dir in input_dirs:
@@ -47,4 +47,4 @@ if __name__ == '__main__':
     parser.add_argument('output_dir', help='path to output directory')
     parser.add_argument('input_dirs', nargs='+', help='list of paths to directories to merge')
     args = parser.parse_args()
-    parse(args.input_dirs, args.output_dir)
+    merge_users_tracks(args.input_dirs, args.output_dir)

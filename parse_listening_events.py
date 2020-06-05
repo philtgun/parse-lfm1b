@@ -7,7 +7,7 @@ import pandas as pd
 TOTAL_LISTENING_EVENTS = 1_088_161_692
 
 
-def parse(input_file, output_dir, skip=0, cutoff=None):
+def parse_listening_events(input_file, output_dir, skip=0, cutoff=None):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True)
 
@@ -49,4 +49,4 @@ if __name__ == '__main__':
     parser.add_argument('--skip', type=int, default=0, help='if specified, will skip this number of listening events')
     parser.add_argument('--cutoff', type=int, help='if specified, will stop at this number of listening events')
     args = parser.parse_args()
-    parse(args.input_file, args.output_dir, args.skip, args.cutoff)
+    parse_listening_events(args.input_file, args.output_dir, args.skip, args.cutoff)
