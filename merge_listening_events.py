@@ -7,6 +7,7 @@ import pandas as pd
 
 
 def parse(input_dirs, output_dir):
+    # build dictionary of directories where user appears for each user
     data = {}
     for input_dir in input_dirs:
         user_files = sorted(Path(input_dir).rglob('*.csv'))
@@ -18,14 +19,24 @@ def parse(input_dirs, output_dir):
 
     Path(output_dir).mkdir(exist_ok=True)
     merged_users = []
+
     for user_id, input_dirs in tqdm(data.items()):
         if len(input_dirs) == 1:
+            # user appears only in one direcotry, no need to merge, just copy
             shutil.copy(str(Path(input_dirs[0]) / f'{user_id}.csv'), output_dir)
         else:
+            # load dataframes from several directories
             dfs = [pd.read_csv(Path(input_dir) / f'{user_id}.csv', index_col='track_id') for input_dir in input_dirs]
+
+            # merge by keeping track_id and artist_id and summing playcount, sort descending
             df = pd.concat(dfs).groupby(by=['track_id', 'artist_id']).sum().sort_values(by='playcount', ascending=False)
+
+            # artist_id is now index, make it a column
             df.reset_index(level=['artist_id'], inplace=True)
+
+            # fix the ordering of columns and save
             df[['playcount', 'artist_id']].to_csv(Path(output_dir) / f'{user_id}.csv')
+
             merged_users.append(user_id)
     print(f'Merged users: {len(merged_users)}')
     print(merged_users)

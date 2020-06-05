@@ -11,6 +11,7 @@ def parse(input_file, output_dir, skip=0, cutoff=None):
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True)
 
+    # build dictionary of {user_id: {track_id: [playcount, artist_id]}}
     data = {}
     total = (cutoff or TOTAL_LISTENING_EVENTS) - skip
     with open(input_file) as le_fp:
@@ -34,6 +35,7 @@ def parse(input_file, output_dir, skip=0, cutoff=None):
             if cutoff is not None and count >= total:
                 break
 
+    # write CSV files for each user sorted by playcounts descending
     for user_id, listens in tqdm(data.items(), desc='Saving'):
         user_file = output_dir / f'{user_id}.csv'
         df = pd.DataFrame.from_dict(listens, orient='index', columns=['playcount', 'artist_id'])
